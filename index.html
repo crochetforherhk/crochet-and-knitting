@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 💡 瀏覽器分頁標題改成 & -->
     <title>Crochet & Knitting | Crochet For Her HK</title>
+    <!-- 引入 Google 官方登入套件 -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root {
@@ -45,8 +45,9 @@
 
         .nav-right { display: flex; align-items: center; gap: 1.5rem; }
 
+        /* 模式切換開關（只有 Staff 登入後才會顯示） */
         .mode-toggle-container {
-            display: none;
+            display: none; 
             align-items: center;
             gap: 0.8rem;
             background: rgba(255, 255, 255, 0.6);
@@ -74,7 +75,6 @@
         input:checked + .slider:before { transform: translateX(20px); }
 
         main { padding: 4rem 5%; max-width: 1200px; margin: 0 auto; }
-
         .header-title { text-align: center; margin-bottom: 4rem; }
         .header-title h1 { font-size: 2.2rem; font-weight: 400; margin-bottom: 0.5rem; }
         .header-title p { color: var(--text-muted); font-size: 0.95rem; }
@@ -159,31 +159,33 @@
 
     <nav>
         <div class="nav-left">
-            <a href="index.html" class="back-home">← 返回主頁</a>
-            <!-- 💡 導覽列文字改成 & -->
+            <a href="https://crochetforherhk.github.io/" class="back-home">← 返回主頁</a>
             <span style="font-weight: 500; font-size: 0.95rem;">Crochet & Knitting</span>
         </div>
         <div class="nav-right">
+            <!-- 模式切換開關（驗證成功後才會顯示） -->
             <div class="mode-toggle-container" id="toggle-container">
-                <span id="mode-status" style="font-size: 0.85rem;">顧客視角</span>
+                <span id="mode-status" style="font-size: 0.85rem;">🛠️ 職員管理模式</span>
                 <label class="switch">
-                    <input type="checkbox" id="mode-checkbox" onchange="toggleViewMode()">
+                    <input type="checkbox" id="mode-checkbox" checked onchange="toggleViewMode()">
                     <span class="slider"></span>
                 </label>
             </div>
+            
+            <!-- 隱形自動化 Google 登入按鈕 -->
             <div id="g_id_onload"
-                 data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+                 data-client_id="845217894523-mockid123456.apps.googleusercontent.com"
                  data-context="signin"
                  data-ux_mode="popup"
-                 data-callback="handleCredentialResponse">
+                 data-callback="handleCredentialResponse"
+                 data-auto_select="true"> <!-- 如果瀏覽器有登入過，會自動彈出嘗試登入 -->
             </div>
-            <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-size="medium"></div>
+            <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-size="medium" data-text="signin"></div>
         </div>
     </nav>
 
     <main>
         <div class="header-title">
-            <!-- 💡 主標題改成 & -->
             <h1>Crochet & Knitting 集市</h1>
             <p>在這裡，妳可以挑選倖存者親手鈎織的溫柔成品，或是帶走一扎療癒感官的嚴選毛線。</p>
         </div>
@@ -217,7 +219,7 @@
             </form>
         </section>
 
-        <!-- 分類一：製成品 -->
+        <!-- 商品展示 -->
         <h2 class="category-title">01. 倖存者手作製成品 / Finished Crafts</h2>
         <div class="products-grid" id="crafts-container">
             <div class="product-card" data-id="1">
@@ -234,7 +236,6 @@
             </div>
         </div>
 
-        <!-- 分類二：毛線區 -->
         <h2 class="category-title">02. 嚴選毛線與材料 / Premium Yarn</h2>
         <div class="products-grid" id="yarn-container">
             <div class="product-card" data-id="2">
@@ -253,27 +254,46 @@
     </main>
 
     <script>
-        const ALLOWED_STAFF_EMAILS = ['crochetforher.hk@gmail.com'];
+        // 🔒 【白名單設定】在這裡填入職員的 Google 帳號
+        const ALLOWED_STAFF_EMAILS = ['crochetforher.hk@gmail.com']; 
+
         let isStaffAuthenticated = false;
 
+        // 當使用者點擊 Google 登入並成功時，這個函式會自動執行
         function handleCredentialResponse(response) {
+            // 解析 Google 回傳的安全加密資料
             const responsePayload = parseJwt(response.credential);
-            if (ALLOWED_STAFF_EMAILS.includes(responsePayload.email)) {
+            const userEmail = responsePayload.email.trim().toLowerCase();
+
+            console.log("登入的 Email 是: " + userEmail);
+
+            // 🎯 自動判定身份
+            if (ALLOWED_STAFF_EMAILS.includes(userEmail)) {
                 isStaffAuthenticated = true;
-                alert(`安全驗證成功！`);
+                alert(`✨ 歡迎回來，管理員！系統已自動切換至管理模式。`);
+                
+                // 隱藏登入按鈕，秀出切換開關
+                document.querySelector('.g_id_signin').style.display = 'none';
                 document.getElementById('toggle-container').style.display = 'flex';
                 document.getElementById('mode-checkbox').checked = true;
+                
                 toggleViewMode();
             } else {
-                alert("此帳號為顧客身分。");
+                // 如果是一般顧客
+                isStaffAuthenticated = false;
+                alert(`親愛的顧客 ${responsePayload.name} 妳好！歡迎來到集市 ✨`);
+                
+                // 隱藏登入按鈕，不給看任何開關，保持純淨顧客視角
+                document.querySelector('.g_id_signin').style.display = 'none';
+                toggleViewMode();
             }
         }
 
-        // 雙模式切換
         function toggleViewMode() {
             const isChecked = document.getElementById('mode-checkbox').checked;
             const staffPanel = document.getElementById('staff-panel');
             const modeStatus = document.getElementById('mode-status');
+            
             if (isChecked && isStaffAuthenticated) {
                 document.body.classList.add('staff-mode-active');
                 staffPanel.style.display = 'block';
@@ -281,7 +301,7 @@
             } else {
                 document.body.classList.remove('staff-mode-active');
                 staffPanel.style.display = 'none';
-                modeStatus.innerText = "顧客視角";
+                modeStatus.innerText = "顧客視角 (預覽)";
             }
         }
 
@@ -313,7 +333,7 @@
             `;
             targetContainer.insertAdjacentHTML('afterbegin', cardHtml);
             document.getElementById('product-form').reset();
-            alert("商品已成功分類上架！");
+            alert("商品已成功發佈！");
         }
 
         function deleteProduct(id) {
@@ -323,6 +343,7 @@
             }
         }
 
+        // 解密 Google Token 的工具
         function parseJwt(token) {
             var base64Url = token.split('.')[1];
             var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
