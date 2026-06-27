@@ -6,7 +6,7 @@
     <title>Crochet & Knitting | Crochet For Her HK</title>
     <style>
         :root {
-            --bg-color: #f4f3f0; /* rhode 燕麥灰米色 */
+            --bg-color: #f4f3f0;
             --card-bg: #ffffff;
             --text-main: #2d2c2a;
             --text-muted: #767471;
@@ -43,7 +43,6 @@
 
         .nav-right { display: flex; align-items: center; gap: 1.5rem; }
 
-        /* 模式切換開關 */
         .mode-toggle-container {
             display: none; 
             align-items: center;
@@ -72,7 +71,6 @@
         input:checked + .slider { background-color: var(--accent-staff); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        /* 職員登入按鈕 */
         .staff-login-btn {
             background: none;
             border: 1px solid var(--border-color);
@@ -256,21 +254,18 @@
     </main>
 
     <script>
-        // 🔒 【職員安全設定】現在名單裡只有這一個唯一的 Staff Gmail 帳號
+        // 🔒 雙重保障白名單
         const ALLOWED_STAFF_EMAILS = ['crochetforherhk@gmail.com']; 
-        const STAFF_PASSWORD = 'Myacrochet28092008'; 
+        const STAFF_PASSWORD = 'crochetforher2026'; 
 
         let isStaffAuthenticated = false;
 
-        // 職員身份雙重驗證
         function verifyStaffIdentity() {
             const inputEmail = prompt("請輸入您的職員 Gmail 帳號：");
             
-            // 檢查 Email 是否完全相符
             if (inputEmail && ALLOWED_STAFF_EMAILS.includes(inputEmail.trim().toLowerCase())) {
                 const inputPassword = prompt("Email 驗證成功！請輸入管理員解鎖密碼：");
                 
-                // 檢查密碼是否正確
                 if (inputPassword === STAFF_PASSWORD) {
                     isStaffAuthenticated = true;
                     alert("✨ 驗證成功！已成功解鎖職員管理後台。");
@@ -281,7 +276,4 @@
                     
                     toggleViewMode();
                 } else {
-                    alert("❌ 密碼錯誤，拒絕存取後台！");
-                }
-            } else if (inputEmail !== null) {
-                alert("❌ 錯誤：此 Gmail 帳號不具備職員存取權限。
+                    alert("❌
