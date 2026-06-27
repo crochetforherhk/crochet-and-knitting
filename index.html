@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crochet & Knitting | Crochet For Her HK</title>
-    <!-- 引入 Google 官方登入套件 -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root {
             --bg-color: #f4f3f0; /* rhode 燕麥灰米色 */
@@ -45,7 +43,7 @@
 
         .nav-right { display: flex; align-items: center; gap: 1.5rem; }
 
-        /* 模式切換開關（只有 Staff 登入後才會顯示） */
+        /* 模式切換開關 */
         .mode-toggle-container {
             display: none; 
             align-items: center;
@@ -73,6 +71,22 @@
         }
         input:checked + .slider { background-color: var(--accent-staff); }
         input:checked + .slider:before { transform: translateX(20px); }
+
+        /* 職員登入按鈕 */
+        .staff-login-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .staff-login-btn:hover {
+            border-color: var(--text-main);
+            color: var(--text-main);
+        }
 
         main { padding: 4rem 5%; max-width: 1200px; margin: 0 auto; }
         .header-title { text-align: center; margin-bottom: 4rem; }
@@ -163,7 +177,6 @@
             <span style="font-weight: 500; font-size: 0.95rem;">Crochet & Knitting</span>
         </div>
         <div class="nav-right">
-            <!-- 模式切換開關（驗證成功後才會顯示） -->
             <div class="mode-toggle-container" id="toggle-container">
                 <span id="mode-status" style="font-size: 0.85rem;">🛠️ 職員管理模式</span>
                 <label class="switch">
@@ -171,26 +184,16 @@
                     <span class="slider"></span>
                 </label>
             </div>
-            
-            <!-- 隱形自動化 Google 登入按鈕 -->
-            <div id="g_id_onload"
-                 data-client_id="845217894523-mockid123456.apps.googleusercontent.com"
-                 data-context="signin"
-                 data-ux_mode="popup"
-                 data-callback="handleCredentialResponse"
-                 data-auto_select="true"> <!-- 如果瀏覽器有登入過，會自動彈出嘗試登入 -->
-            </div>
-            <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-size="medium" data-text="signin"></div>
+            <button class="staff-login-btn" id="login-trigger-btn" onclick="verifyStaffIdentity()">員工登入</button>
         </div>
     </nav>
 
     <main>
         <div class="header-title">
             <h1>Crochet & Knitting 集市</h1>
-            <p>在這裡，妳可以挑選倖存者親手鈎織的溫柔成品，或是帶走一扎療癒感官的嚴選毛線。</p>
+            <p>在這裡，妳可以挑選親手鈎織的溫柔成品，或是帶走一扎療癒感官的嚴選毛線。</p>
         </div>
 
-        <!-- 職員上架後台 -->
         <section id="staff-panel">
             <h3 style="color: var(--accent-staff); margin-bottom: 1.5rem;">🛠️ 職員後台：新增商品</h3>
             <form id="product-form" onsubmit="addNewProduct(event)">
@@ -198,7 +201,7 @@
                     <div class="form-group">
                         <label for="prod-type">商品分類</label>
                         <select id="prod-type">
-                            <option value="craft">倖存者手作製成品 (Crafts)</option>
+                            <option value="craft">手作製成品 (Crafts)</option>
                             <option value="yarn">療癒毛線材料 (Yarn)</option>
                         </select>
                     </div>
@@ -219,18 +222,17 @@
             </form>
         </section>
 
-        <!-- 商品展示 -->
-        <h2 class="category-title">01. 倖存者手作製成品 / Finished Crafts</h2>
+        <h2 class="category-title">01. 手作製成品 / Finished Crafts</h2>
         <div class="products-grid" id="crafts-container">
             <div class="product-card" data-id="1">
                 <div class="staff-actions"><button class="delete-btn" onclick="deleteProduct(1)">下架</button></div>
                 <div class="product-image-placeholder">[ 織品成品影像 ]</div>
                 <div class="product-info">
                     <h4 class="product-title">溫柔厚實麻花編織包</h4>
-                    <p style="color: var(--text-muted); font-size: 0.85rem;">由安全織網成員手工鈎織，帶有微微感官降壓效果。</p>
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">手工鈎織，帶有微微感官降壓效果。</p>
                     <div class="product-meta">
                         <span class="product-price">HK$ 240</span>
-                        <button class="buy-btn" onclick="alert('金流對接中！')">選購</button>
+                        <button class="buy-btn" onclick="alert('訂購功能對接中！')">選購</button>
                     </div>
                 </div>
             </div>
@@ -246,7 +248,7 @@
                     <p style="color: var(--text-muted); font-size: 0.85rem;">適合新手編織，觸感柔軟不扎手，極具療癒感。</p>
                     <div class="product-meta">
                         <span class="product-price">HK$ 45 / 團</span>
-                        <button class="buy-btn" onclick="alert('金流對接中！')">選購</button>
+                        <button class="buy-btn" onclick="alert('訂購功能對接中！')">選購</button>
                     </div>
                 </div>
             </div>
@@ -254,101 +256,32 @@
     </main>
 
     <script>
-        // 🔒 【白名單設定】在這裡填入職員的 Google 帳號
+        // 🔒 【職員安全設定】現在名單裡只有這一個唯一的 Staff Gmail 帳號
         const ALLOWED_STAFF_EMAILS = ['crochetforherhk@gmail.com']; 
+        const STAFF_PASSWORD = 'Myacrochet28092008'; 
 
         let isStaffAuthenticated = false;
 
-        // 當使用者點擊 Google 登入並成功時，這個函式會自動執行
-        function handleCredentialResponse(response) {
-            // 解析 Google 回傳的安全加密資料
-            const responsePayload = parseJwt(response.credential);
-            const userEmail = responsePayload.email.trim().toLowerCase();
-
-            console.log("登入的 Email 是: " + userEmail);
-
-            // 🎯 自動判定身份
-            if (ALLOWED_STAFF_EMAILS.includes(userEmail)) {
-                isStaffAuthenticated = true;
-                alert(`✨ 歡迎回來，管理員！系統已自動切換至管理模式。`);
-                
-                // 隱藏登入按鈕，秀出切換開關
-                document.querySelector('.g_id_signin').style.display = 'none';
-                document.getElementById('toggle-container').style.display = 'flex';
-                document.getElementById('mode-checkbox').checked = true;
-                
-                toggleViewMode();
-            } else {
-                // 如果是一般顧客
-                isStaffAuthenticated = false;
-                alert(`親愛的顧客 ${responsePayload.name} 妳好！歡迎來到集市 ✨`);
-                
-                // 隱藏登入按鈕，不給看任何開關，保持純淨顧客視角
-                document.querySelector('.g_id_signin').style.display = 'none';
-                toggleViewMode();
-            }
-        }
-
-        function toggleViewMode() {
-            const isChecked = document.getElementById('mode-checkbox').checked;
-            const staffPanel = document.getElementById('staff-panel');
-            const modeStatus = document.getElementById('mode-status');
+        // 職員身份雙重驗證
+        function verifyStaffIdentity() {
+            const inputEmail = prompt("請輸入您的職員 Gmail 帳號：");
             
-            if (isChecked && isStaffAuthenticated) {
-                document.body.classList.add('staff-mode-active');
-                staffPanel.style.display = 'block';
-                modeStatus.innerText = "🛠️ 職員管理模式";
-            } else {
-                document.body.classList.remove('staff-mode-active');
-                staffPanel.style.display = 'none';
-                modeStatus.innerText = "顧客視角 (預覽)";
-            }
-        }
-
-        function addNewProduct(event) {
-            event.preventDefault();
-            const type = document.getElementById('prod-type').value;
-            const title = document.getElementById('prod-title').value;
-            const price = document.getElementById('prod-price').value;
-            const desc = document.getElementById('prod-desc').value;
-            const id = Date.now();
-
-            const targetContainer = type === 'craft' ? 
-                document.getElementById('crafts-container') : 
-                document.getElementById('yarn-container');
-            
-            const cardHtml = `
-                <div class="product-card" data-id="${id}">
-                    <div class="staff-actions"><button class="delete-btn" onclick="deleteProduct(${id})">下架</button></div>
-                    <div class="product-image-placeholder">[ 商品影像 ]</div>
-                    <div class="product-info">
-                        <h4 class="product-title">${title}</h4>
-                        <p style="color: var(--text-muted); font-size: 0.85rem;">${desc}</p>
-                        <div class="product-meta">
-                            <span class="product-price">HK$ ${price}</span>
-                            <button class="buy-btn" onclick="alert('金流對接中！')">選購</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            targetContainer.insertAdjacentHTML('afterbegin', cardHtml);
-            document.getElementById('product-form').reset();
-            alert("商品已成功發佈！");
-        }
-
-        function deleteProduct(id) {
-            if (confirm("確認要下架此商品嗎？")) {
-                const card = document.querySelector(`.product-card[data-id="${id}"]`);
-                if (card) card.remove();
-            }
-        }
-
-        // 解密 Google Token 的工具
-        function parseJwt(token) {
-            var base64Url = token.split('.')[1];
-            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            return JSON.parse(decodeURIComponent(window.atob(base64).split('').map(c => '%' + ('0' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
-        }
-    </script>
-</body>
-</html>
+            // 檢查 Email 是否完全相符
+            if (inputEmail && ALLOWED_STAFF_EMAILS.includes(inputEmail.trim().toLowerCase())) {
+                const inputPassword = prompt("Email 驗證成功！請輸入管理員解鎖密碼：");
+                
+                // 檢查密碼是否正確
+                if (inputPassword === STAFF_PASSWORD) {
+                    isStaffAuthenticated = true;
+                    alert("✨ 驗證成功！已成功解鎖職員管理後台。");
+                    
+                    document.getElementById('login-trigger-btn').style.display = 'none';
+                    document.getElementById('toggle-container').style.display = 'flex';
+                    document.getElementById('mode-checkbox').checked = true;
+                    
+                    toggleViewMode();
+                } else {
+                    alert("❌ 密碼錯誤，拒絕存取後台！");
+                }
+            } else if (inputEmail !== null) {
+                alert("❌ 錯誤：此 Gmail 帳號不具備職員存取權限。
