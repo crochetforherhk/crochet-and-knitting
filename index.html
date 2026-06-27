@@ -281,8 +281,8 @@
                         <input type="text" id="prod-title" required placeholder="e.g., Cozy Hand-knitted Tote Bag">
                     </div>
                     <div class="form-group">
-                        <label for="prod-price">定價 (HKD)</label>
-                        <input type="number" id="prod-price" required placeholder="e.g., 120">
+                        <label for="prod-price">定價 (USD $)</label>
+<input type="number" id="prod-price" step="0.01" required placeholder="e.g., 3.99">
                     </div>
                 </div>
                 <div class="form-grid" style="grid-template-columns: 2fr 1fr; align-items: end;">
@@ -312,7 +312,7 @@
                     <h4 class="product-title">Cozy Chunky Knit Tote Bag</h4>
                     <p style="color: var(--text-muted); font-size: 0.85rem;">Handcrafted using premium soft yarn, perfect for daily look.</p>
                     <div class="product-meta">
-                        <span class="product-price">HK$ 240</span>
+                        <span class="product-price">$ 240</span>
                         <button class="buy-btn" onclick="alert('Order system coming soon!')">Purchase</button>
                     </div>
                 </div>
@@ -405,7 +405,7 @@
             event.preventDefault();
             const type = document.getElementById('prod-type').value;
             const title = document.getElementById('prod-title').value;
-            const price = document.getElementById('prod-price').value;
+            const price = parseFloat(document.getElementById('prod-price').value).toFixed(2);
             const desc = document.getElementById('prod-desc').value;
             const id = Date.now();
 
