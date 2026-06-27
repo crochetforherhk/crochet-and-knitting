@@ -39,7 +39,6 @@
 
         .nav-left { display: flex; align-items: center; gap: 1.5rem; }
         .back-home { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
-        .back-home:hover { color: var(--text-main); }
 
         .nav-right { display: flex; align-items: center; gap: 1.5rem; }
 
@@ -85,6 +84,36 @@
             border-color: var(--text-main);
             color: var(--text-main);
         }
+
+        /* 🔒 內建自製登入彈窗樣式 (絕對不會被瀏覽器攔截) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-box {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .modal-box h3 { margin-bottom: 1.5rem; font-weight: 400; font-size: 1.2rem; }
+        .modal-input {
+            width: 100%; padding: 0.75rem; margin-bottom: 1rem;
+            border: 1px solid var(--border-color); border-radius: 8px;
+            background: #faf9f6; font-size: 0.9rem;
+        }
+        .modal-btns { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 0.5rem; }
+        .modal-btn-cancel { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; }
+        .modal-btn-confirm { background: var(--text-main); color: #fff; border: none; padding: 0.5rem 1.5rem; border-radius: 50px; cursor: pointer; font-size: 0.9rem; }
 
         main { padding: 4rem 5%; max-width: 1200px; margin: 0 auto; }
         .header-title { text-align: center; margin-bottom: 4rem; }
@@ -171,7 +200,6 @@
 
     <nav>
         <div class="nav-left">
-            <a href="https://crochetforherhk.github.io/" class="back-home">← 返回主頁</a>
             <span style="font-weight: 500; font-size: 0.95rem;">Crochet & Knitting</span>
         </div>
         <div class="nav-right">
@@ -182,9 +210,21 @@
                     <span class="slider"></span>
                 </label>
             </div>
-            <button class="staff-login-btn" id="login-trigger-btn" onclick="verifyStaffIdentity()">員工登入</button>
+            <button class="staff-login-btn" id="login-trigger-btn" onclick="openLoginModal()">員工登入</button>
         </div>
     </nav>
+
+    <div class="modal-overlay" id="login-modal">
+        <div class="modal-box">
+            <h3>🛠️ 職員安全驗證</h3>
+            <input type="email" id="modal-email" class="modal-input" placeholder="請輸入職員 Gmail">
+            <input type="password" id="modal-pass" class="modal-input" placeholder="請輸入解鎖密碼">
+            <div class="modal-btns">
+                <button class="modal-btn-cancel" onclick="closeLoginModal()">取消</button>
+                <button class="modal-btn-confirm" onclick="submitStaffLogin()">確認登入</button>
+            </div>
+        </div>
+    </div>
 
     <main>
         <div class="header-title">
@@ -254,26 +294,100 @@
     </main>
 
     <script>
-        // 🔒 雙重保障白名單
-        const ALLOWED_STAFF_EMAILS = ['crochetforherhk@gmail.com']; 
+        const ALLOWED_STAFF_EMAILS = ['crochetforher.hk@gmail.com', 'myatam2018@gmail.com']; 
         const STAFF_PASSWORD = 'crochetforher2026'; 
 
         let isStaffAuthenticated = false;
 
-        function verifyStaffIdentity() {
-            const inputEmail = prompt("請輸入您的職員 Gmail 帳號：");
-            
-            if (inputEmail && ALLOWED_STAFF_EMAILS.includes(inputEmail.trim().toLowerCase())) {
-                const inputPassword = prompt("Email 驗證成功！請輸入管理員解鎖密碼：");
-                
-                if (inputPassword === STAFF_PASSWORD) {
+        // 打開彈窗
+        function openLoginModal() {
+            document.getElementById('login-modal').style.display = 'flex';
+        }
+
+        // 關閉彈窗
+        function closeLoginModal() {
+            document.getElementById('login-modal').style.display = 'none';
+            document.getElementById('modal-email').value = '';
+            document.getElementById('modal-pass').value = '';
+        }
+
+        // 送出登入驗證
+        function submitStaffLogin() {
+            const emailInput = document.getElementById('modal-email').value.trim().toLowerCase();
+            const passInput = document.getElementById('modal-pass').value;
+
+            if (ALLOWED_STAFF_EMAILS.includes(emailInput)) {
+                if (passInput === STAFF_PASSWORD) {
                     isStaffAuthenticated = true;
                     alert("✨ 驗證成功！已成功解鎖職員管理後台。");
                     
+                    document.getElementById('login-modal').style.display = 'none';
                     document.getElementById('login-trigger-btn').style.display = 'none';
                     document.getElementById('toggle-container').style.display = 'flex';
                     document.getElementById('mode-checkbox').checked = true;
                     
                     toggleViewMode();
                 } else {
-                    alert("❌
+                    alert("❌ 密碼錯誤，拒絕存取！");
+                }
+            } else {
+                alert("❌ 錯誤：此 Gmail 帳號不具備職員權限。");
+            }
+        }
+
+        function toggleViewMode() {
+            const isChecked = document.getElementById('mode-checkbox').checked;
+            const staffPanel = document.getElementById('staff-panel');
+            const modeStatus = document.getElementById('mode-status');
+            
+            if (isChecked && isStaffAuthenticated) {
+                document.body.classList.add('staff-mode-active');
+                staffPanel.style.display = 'block';
+                modeStatus.innerText = "🛠️ 職員管理模式";
+            } else {
+                document.body.classList.remove('staff-mode-active');
+                staffPanel.style.display = 'none';
+                modeStatus.innerText = "顧客視角 (預覽)";
+            }
+        }
+
+        function addNewProduct(event) {
+            event.preventDefault();
+            const type = document.getElementById('prod-type').value;
+            const title = document.getElementById('prod-title').value;
+            const price = document.getElementById('prod-price').value;
+            const desc = document.getElementById('prod-desc').value;
+            const id = Date.now();
+
+            const targetContainer = type === 'craft' ? 
+                document.getElementById('crafts-container') : 
+                document.getElementById('yarn-container');
+            
+            const cardHtml = `
+                <div class="product-card" data-id="${id}">
+                    <div class="staff-actions"><button class="delete-btn" onclick="deleteProduct(${id})">下架</button></div>
+                    <div class="product-image-placeholder">[ 商品影像 ]</div>
+                    <div class="product-info">
+                        <h4 class="product-title">${title}</h4>
+                        <p style="color: var(--text-muted); font-size: 0.85rem;">${desc}</p>
+                        <div class="product-meta">
+                            <span class="product-price">HK$ ${price}</span>
+                            <button class="buy-btn" onclick="alert('訂購功能對接中！')">選購</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            targetContainer.insertAdjacentHTML('afterbegin', cardHtml);
+            document.getElementById('product-form').reset();
+            alert("商品已成功發佈！");
+        }
+
+        function deleteProduct(id) {
+            if (confirm("確認要下架此商品嗎？")) {
+                const card = document.querySelector(`.product-card[data-id="${id}"]`);
+                if (card) card.remove();
+            }
+        }
+    </script>
+</body>
+</html>
