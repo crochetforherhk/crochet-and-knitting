@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-HK">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,7 +38,7 @@
         }
 
         .nav-left { display: flex; align-items: center; gap: 1.5rem; }
-        .back-home { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
+        .logo-text { font-weight: 500; font-size: 0.95rem; text-decoration: none; color: var(--text-main); }
 
         .nav-right { display: flex; align-items: center; gap: 1.5rem; }
 
@@ -85,7 +85,7 @@
             color: var(--text-main);
         }
 
-        /* 🔒 內建自製登入彈窗樣式 (絕對不會被瀏覽器攔截) */
+        /* 🔒 內建自製登入彈窗 */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -153,6 +153,34 @@
             color: var(--text-main); font-family: inherit; font-size: 0.9rem;
         }
 
+        /* 圖片上傳按鈕自訂樣式 */
+        .file-upload-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .file-upload-btn {
+            display: inline-block;
+            padding: 0.75rem 1rem;
+            background: #faf9f6;
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .file-upload-btn:hover {
+            border-color: var(--accent-staff);
+            color: var(--text-main);
+        }
+        .file-upload-wrapper input[type="file"] {
+            position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer;
+        }
+        #file-chosen {
+            margin-top: 0.25rem; font-size: 0.75rem; color: var(--accent-staff); display: block;
+        }
+
         .submit-btn {
             background-color: var(--text-main); color: #fff; border: none;
             padding: 0.8rem 2rem; border-radius: 50px; cursor: pointer; font-size: 0.9rem;
@@ -172,6 +200,11 @@
             position: relative;
         }
 
+        .product-image {
+            width: 100%; height: 280px; object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+            display: block;
+        }
         .product-image-placeholder {
             width: 100%; height: 280px; background-color: #faf9f6;
             display: flex; align-items: center; justify-content: center;
@@ -200,7 +233,7 @@
 
     <nav>
         <div class="nav-left">
-            <span style="font-weight: 500; font-size: 0.95rem;">Crochet & Knitting</span>
+            <a href="#" class="logo-text">Crochet & Knitting</a>
         </div>
         <div class="nav-right">
             <div class="mode-toggle-container" id="toggle-container">
@@ -210,26 +243,26 @@
                     <span class="slider"></span>
                 </label>
             </div>
-            <button class="staff-login-btn" id="login-trigger-btn" onclick="openLoginModal()">員工登入</button>
+            <button class="staff-login-btn" id="login-trigger-btn" onclick="openLoginModal()">Staff Login</button>
         </div>
     </nav>
 
     <div class="modal-overlay" id="login-modal">
         <div class="modal-box">
-            <h3>🛠️ 職員安全驗證</h3>
-            <input type="email" id="modal-email" class="modal-input" placeholder="請輸入職員 Gmail">
-            <input type="password" id="modal-pass" class="modal-input" placeholder="請輸入解鎖密碼">
+            <h3>🛠️ Staff Verification</h3>
+            <input type="email" id="modal-email" class="modal-input" placeholder="Staff Gmail">
+            <input type="password" id="modal-pass" class="modal-input" placeholder="Password">
             <div class="modal-btns">
-                <button class="modal-btn-cancel" onclick="closeLoginModal()">取消</button>
-                <button class="modal-btn-confirm" onclick="submitStaffLogin()">確認登入</button>
+                <button class="modal-btn-cancel" onclick="closeLoginModal()">Cancel</button>
+                <button class="modal-btn-confirm" onclick="submitStaffLogin()">Login</button>
             </div>
         </div>
     </div>
 
     <main>
         <div class="header-title">
-            <h1>Crochet & Knitting 集市</h1>
-            <p>在這裡，妳可以挑選親手鈎織的溫柔成品，或是帶走一扎療癒感官的嚴選毛線。</p>
+            <h1>The Crochet & Knitting Marketplace</h1>
+            <p>Discover beautiful handcrafted items made with care, or choose from our selection of premium yarn.</p>
         </div>
 
         <section id="staff-panel">
@@ -239,54 +272,64 @@
                     <div class="form-group">
                         <label for="prod-type">商品分類</label>
                         <select id="prod-type">
-                            <option value="craft">手作製成品 (Crafts)</option>
-                            <option value="yarn">療癒毛線材料 (Yarn)</option>
+                            <option value="craft">Handcrafted Finished Pieces</option>
+                            <option value="yarn">Premium Yarn & Materials</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="prod-title">商品名稱</label>
-                        <input type="text" id="prod-title" required placeholder="例如：霧粉色冰條線 / 療癒編織包">
+                        <label for="prod-title">商品名稱 (English)</label>
+                        <input type="text" id="prod-title" required placeholder="e.g., Cozy Hand-knitted Tote Bag">
                     </div>
                     <div class="form-group">
                         <label for="prod-price">定價 (HKD)</label>
-                        <input type="number" id="prod-price" required placeholder="80">
+                        <input type="number" id="prod-price" required placeholder="e.g., 120">
                     </div>
                 </div>
-                <div class="form-group" style="margin-bottom: 1.5rem;">
-                    <label for="prod-desc">商品描述</label>
-                    <textarea id="prod-desc" rows="2" placeholder="詳細規格或手作背後的小故事..."></textarea>
+                <div class="form-grid" style="grid-template-columns: 2fr 1fr; align-items: end;">
+                    <div class="form-group">
+                        <label for="prod-desc">商品描述 (English)</label>
+                        <textarea id="prod-desc" rows="2" placeholder="Specifications, measurements, or the story behind it..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>商品圖片 (Photo)</label>
+                        <div class="file-upload-wrapper">
+                            <div class="file-upload-btn" id="upload-btn-text">📷 Choose Photo</div>
+                            <input type="file" id="prod-image-file" accept="image/*" onchange="handleFileSelect(event)">
+                        </div>
+                        <span id="file-chosen">No file chosen</span>
+                    </div>
                 </div>
-                <button type="submit" class="submit-btn">+ 確認發佈商品</button>
+                <button type="submit" class="submit-btn" style="margin-top: 1rem;">+ 確認發佈商品</button>
             </form>
         </section>
 
-        <h2 class="category-title">01. 手作製成品 / Finished Crafts</h2>
+        <h2 class="category-title">01. Handcrafted Finished Pieces</h2>
         <div class="products-grid" id="crafts-container">
             <div class="product-card" data-id="1">
                 <div class="staff-actions"><button class="delete-btn" onclick="deleteProduct(1)">下架</button></div>
-                <div class="product-image-placeholder">[ 織品成品影像 ]</div>
+                <div class="product-image-placeholder">No Image Available</div>
                 <div class="product-info">
-                    <h4 class="product-title">溫柔厚實麻花編織包</h4>
-                    <p style="color: var(--text-muted); font-size: 0.85rem;">手工鈎織，帶有微微感官降壓效果。</p>
+                    <h4 class="product-title">Cozy Chunky Knit Tote Bag</h4>
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">Handcrafted using premium soft yarn, perfect for daily look.</p>
                     <div class="product-meta">
                         <span class="product-price">HK$ 240</span>
-                        <button class="buy-btn" onclick="alert('訂購功能對接中！')">選購</button>
+                        <button class="buy-btn" onclick="alert('Order system coming soon!')">Purchase</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <h2 class="category-title">02. 嚴選毛線與材料 / Premium Yarn</h2>
+        <h2 class="category-title">02. Premium Yarn & Materials</h2>
         <div class="products-grid" id="yarn-container">
             <div class="product-card" data-id="2">
                 <div class="staff-actions"><button class="delete-btn" onclick="deleteProduct(2)">下架</button></div>
-                <div class="product-image-placeholder">[ 毛線色彩影像 ]</div>
+                <div class="product-image-placeholder">No Image Available</div>
                 <div class="product-info">
-                    <h4 class="product-title">極致親膚 燕麥色純棉五股牛奶線</h4>
-                    <p style="color: var(--text-muted); font-size: 0.85rem;">適合新手編織，觸感柔軟不扎手，極具療癒感。</p>
+                    <h4 class="product-title">Ultra-Soft Cotton Milk Yarn (Oatmeal)</h4>
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">5-ply premium skin-friendly yarn, perfect for beginners.</p>
                     <div class="product-meta">
-                        <span class="product-price">HK$ 45 / 團</span>
-                        <button class="buy-btn" onclick="alert('訂購功能對接中！')">選購</button>
+                        <span class="product-price">HK$ 45 / ball</span>
+                        <button class="buy-btn" onclick="alert('Order system coming soon!')">Purchase</button>
                     </div>
                 </div>
             </div>
@@ -294,24 +337,19 @@
     </main>
 
     <script>
-        const ALLOWED_STAFF_EMAILS = ['crochetforherhk@gmail.com']; 
-        const STAFF_PASSWORD = 'Myacrochet28092008'; 
+        const ALLOWED_STAFF_EMAILS = ['crochetforher.hk@gmail.com', 'myatam2018@gmail.com']; 
+        const STAFF_PASSWORD = 'crochetforher2026'; 
 
         let isStaffAuthenticated = false;
+        let currentUploadedImageBase64 = ""; // 用來儲存圖片編碼
 
-        // 打開彈窗
-        function openLoginModal() {
-            document.getElementById('login-modal').style.display = 'flex';
-        }
-
-        // 關閉彈窗
+        function openLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
         function closeLoginModal() {
             document.getElementById('login-modal').style.display = 'none';
             document.getElementById('modal-email').value = '';
             document.getElementById('modal-pass').value = '';
         }
 
-        // 送出登入驗證
         function submitStaffLogin() {
             const emailInput = document.getElementById('modal-email').value.trim().toLowerCase();
             const passInput = document.getElementById('modal-pass').value;
@@ -320,19 +358,13 @@
                 if (passInput === STAFF_PASSWORD) {
                     isStaffAuthenticated = true;
                     alert("✨ 驗證成功！已成功解鎖職員管理後台。");
-                    
                     document.getElementById('login-modal').style.display = 'none';
                     document.getElementById('login-trigger-btn').style.display = 'none';
                     document.getElementById('toggle-container').style.display = 'flex';
                     document.getElementById('mode-checkbox').checked = true;
-                    
                     toggleViewMode();
-                } else {
-                    alert("❌ 密碼錯誤，拒絕存取！");
-                }
-            } else {
-                alert("❌ 錯誤：此 Gmail 帳號不具備職員權限。");
-            }
+                } else { alert("❌ 密碼錯誤！"); }
+            } else { alert("❌ 此帳號不具備職員權限。"); }
         }
 
         function toggleViewMode() {
@@ -347,7 +379,25 @@
             } else {
                 document.body.classList.remove('staff-mode-active');
                 staffPanel.style.display = 'none';
-                modeStatus.innerText = "顧客視角 (預覽)";
+                modeStatus.innerText = "Customer View";
+            }
+        }
+
+        // 📸 處理選取圖片的動作
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const fileChosenLabel = document.getElementById('file-chosen');
+            
+            if (file) {
+                fileChosenLabel.innerText = file.name;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentUploadedImageBase64 = e.target.result; // 將圖片轉為可顯示的本地連結
+                };
+                reader.readAsDataURL(file);
+            } else {
+                fileChosenLabel.innerText = "No file chosen";
+                currentUploadedImageBase64 = "";
             }
         }
 
@@ -363,22 +413,31 @@
                 document.getElementById('crafts-container') : 
                 document.getElementById('yarn-container');
             
+            // 判斷是否有上傳自訂圖片，如果沒有，就用漂亮的預設 placeholder
+            const imageHtml = currentUploadedImageBase64 ? 
+                `<img src="${currentUploadedImageBase64}" class="product-image" alt="Product Image">` : 
+                `<div class="product-image-placeholder">No Image Available</div>`;
+
             const cardHtml = `
                 <div class="product-card" data-id="${id}">
                     <div class="staff-actions"><button class="delete-btn" onclick="deleteProduct(${id})">下架</button></div>
-                    <div class="product-image-placeholder">[ 商品影像 ]</div>
+                    ${imageHtml}
                     <div class="product-info">
                         <h4 class="product-title">${title}</h4>
                         <p style="color: var(--text-muted); font-size: 0.85rem;">${desc}</p>
                         <div class="product-meta">
                             <span class="product-price">HK$ ${price}</span>
-                            <button class="buy-btn" onclick="alert('訂購功能對接中！')">選購</button>
+                            <button class="buy-btn" onclick="alert('Order system coming soon!')">Purchase</button>
                         </div>
                     </div>
                 </div>
             `;
             targetContainer.insertAdjacentHTML('afterbegin', cardHtml);
+            
+            // 重設表單
             document.getElementById('product-form').reset();
+            document.getElementById('file-chosen').innerText = "No file chosen";
+            currentUploadedImageBase64 = "";
             alert("商品已成功發佈！");
         }
 
