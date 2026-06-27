@@ -420,7 +420,10 @@
 
             const cardHtml = `
                 <div class="product-card" data-id="${id}">
-                    <div class="staff-actions"><button class="delete-btn" onclick="deleteProduct(${id})">下架</button></div>
+                    <div class="staff-actions">
+    <button class="delete-btn" style="background: #4b5563; margin-right: 5px;" onclick="editProduct(${id})">修改</button>
+    <button class="delete-btn" onclick="deleteProduct(${id})">下架</button>
+</div>
                     ${imageHtml}
                     <div class="product-info">
                         <h4 class="product-title">${title}</h4>
