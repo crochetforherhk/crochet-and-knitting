@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-HK">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caroline's Yarns</title>
+    <title>Crochet & Knitting | Crochet For Her HK</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root {
-            --bg-color: #f4f3f0;
+            --bg-color: #f4f3f0; /* rhode 燕麥灰米色 */
             --card-bg: #ffffff;
             --text-main: #2d2c2a;
             --text-muted: #767471;
@@ -38,11 +39,13 @@
         }
 
         .nav-left { display: flex; align-items: center; gap: 1.5rem; }
-        .logo-text { font-weight: 500; font-size: 0.95rem; text-decoration: none; color: var(--text-main); }
+        .back-home { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
+        .back-home:hover { color: var(--text-main); }
+
         .nav-right { display: flex; align-items: center; gap: 1.5rem; }
 
         .mode-toggle-container {
-            display: none; 
+            display: none;
             align-items: center;
             gap: 0.8rem;
             background: rgba(255, 255, 255, 0.6);
@@ -69,55 +72,13 @@
         input:checked + .slider { background-color: var(--accent-staff); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        .staff-login-btn {
-            background: none;
-            border: 1px solid var(--border-color);
-            padding: 0.5rem 1.2rem;
-            border-radius: 50px;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .staff-login-btn:hover {
-            border-color: var(--text-main);
-            color: var(--text-main);
-        }
-
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(4px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-box {
-            background: var(--card-bg);
-            padding: 2.5rem;
-            border-radius: 16px;
-            width: 90%;
-            max-width: 400px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        }
-        .modal-box h3 { margin-bottom: 1.5rem; font-weight: 400; font-size: 1.2rem; }
-        .modal-input {
-            width: 100%; padding: 0.75rem; margin-bottom: 1rem;
-            border: 1px solid var(--border-color); border-radius: 8px;
-            background: #faf9f6; font-size: 0.9rem;
-        }
-        .modal-btns { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 0.5rem; }
-        .modal-btn-cancel { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; }
-        .modal-btn-confirm { background: var(--text-main); color: #fff; border: none; padding: 0.5rem 1.5rem; border-radius: 50px; cursor: pointer; font-size: 0.9rem; }
-
         main { padding: 4rem 5%; max-width: 1200px; margin: 0 auto; }
+
         .header-title { text-align: center; margin-bottom: 4rem; }
         .header-title h1 { font-size: 2.2rem; font-weight: 400; margin-bottom: 0.5rem; }
         .header-title p { color: var(--text-muted); font-size: 0.95rem; }
 
+        /* 分類標籤 */
         .category-title {
             font-size: 0.8rem;
             text-transform: uppercase;
@@ -128,6 +89,7 @@
             padding-bottom: 0.5rem;
         }
 
+        /* 職員面板 */
         #staff-panel {
             display: none;
             background-color: var(--card-bg);
@@ -151,29 +113,64 @@
             color: var(--text-main); font-family: inherit; font-size: 0.9rem;
         }
 
-        .file-upload-wrapper { position: relative; display: inline-block; }
-        .file-upload-btn {
-            display: inline-block; padding: 0.75rem 1rem; background: #faf9f6;
-            border: 1px dashed var(--border-color); border-radius: 8px;
-            font-size: 0.85rem; color: var(--text-muted); cursor: pointer; text-align: center;
+        .submit-btn {
+            background-color: var(--text-main); color: #fff; border: none;
+            padding: 0.8rem 2rem; border-radius: 50px; cursor: pointer; font-size: 0.9rem;
         }
-        .file-upload-wrapper input[type="file"] { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
-        #file-chosen { margin-top: 0.25rem; font-size: 0.75rem; color: var(--accent-staff); display: block; }
 
-        .submit-btn { background-color: var(--text-main); color: #fff; border: none; padding: 0.8rem 2rem; border-radius: 50px; cursor: pointer; font-size: 0.9rem; }
+        /* 商品展示 */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2.5rem;
+        }
 
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2.5rem; }
-        .product-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; position: relative; }
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
 
-        .product-image { width: 100%; height: 280px; object-fit: cover; border-bottom: 1px solid var(--border-color); display: block; }
-        .product-image-placeholder { width: 100%; height: 280px; background-color: #faf9f6; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.85rem; border-bottom: 1px solid var(--border-color); }
+        .product-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .product-image-placeholder {
+            width: 100%; height: 280px; background-color: #faf9f6;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-muted); font-size: 0.85rem; border-bottom: 1px solid var(--border-color);
+        }
 
         .product-info { padding: 1.5rem; }
         .product-title { font-size: 1.1rem; font-weight: 400; margin-bottom: 0.5rem; }
+        
+        .status-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
+            margin-right: 0.5rem;
+        }
+        .status-new { background-color: #2d2c2a; color: #ffffff; }
+        .status-presale { background-color: #e2e8f0; color: #475569; }
+        .status-soldout { background-color: #f1f1f0; color: #b5b3b0; }
+        
         .product-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; }
         .product-price { font-weight: 500; font-size: 1.05rem; }
         
-        .buy-btn { background: none; border: 1px solid var(--text-main); padding: 0.4rem 1rem; border-radius: 50px; cursor: pointer; font-size: 0.8rem; transition: all 0.2s; }
+        .buy-btn {
+            background: none; border: 1px solid var(--text-main); padding: 0.4rem 1rem;
+            border-radius: 50px; cursor: pointer; font-size: 0.8rem; transition: all 0.2s;
+        }
         .buy-btn:hover { background-color: var(--text-main); color: #fff; }
 
         .staff-actions { display: none; position: absolute; top: 10px; right: 10px; }
@@ -181,47 +178,66 @@
 
         body.staff-mode-active { border-top: 4px solid var(--accent-staff); }
         body.staff-mode-active .staff-actions { display: flex; }
+
+        .user-profile-box {
+            display: none; /* 預設隱藏，由 JS 控制顯示 */
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+        }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="nav-left"><a href="#" class="logo-text">Caroline's Yarns</a></div>
+        <div class="nav-left">
+            <a href="index.html" class="back-home">← 返回主頁</a>
+            <span style="font-weight: 500; font-size: 0.95rem;">Crochet & Knitting</span>
+        </div>
         <div class="nav-right">
+            <!-- 後台切換開關 -->
             <div class="mode-toggle-container" id="toggle-container">
-                <span id="mode-status" style="font-size: 0.85rem;">🛠️ 職員管理模式</span>
+                <span id="mode-status" style="font-size: 0.85rem;">顧客視角</span>
                 <label class="switch">
-                    <input type="checkbox" id="mode-checkbox" checked onchange="toggleViewMode()">
+                    <input type="checkbox" id="mode-checkbox" onchange="toggleViewMode()">
                     <span class="slider"></span>
                 </label>
             </div>
-            <button class="staff-login-btn" id="login-trigger-btn" onclick="openLoginModal()">Staff Login</button>
-        </div>
-    </nav>nav>
+            
+            <!-- 🌟 穩固的 Google 按鈕原生容器，絕不用 innerHTML 摧毀它 -->
+            <div id="google-btn-wrapper" style="display: block;">
+                <div id="g_id_onload"
+                     data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+                     data-context="signin"
+                     data-ux_mode="popup"
+                     data-callback="handleCredentialResponse">
+                </div>
+                <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-size="medium"></div>
+            </div>
 
-    <div class="modal-overlay" id="login-modal">
-        <div class="modal-box">
-            <h3>🛠️ Staff Verification</h3>
-            <input type="email" id="modal-email" class="modal-input" placeholder="Staff Gmail">
-            <input type="password" id="modal-pass" class="modal-input" placeholder="Password">
-            <div class="modal-btns">
-                <button class="modal-btn-cancel" onclick="closeLoginModal()">Cancel</button>
-                <button class="modal-btn-confirm" onclick="submitStaffLogin()">Login</button>
+            <!-- 🌟 獨立的頭像容器，僅靠 CSS 顯示/隱藏切換 -->
+            <div id="user-profile-display" class="user-profile-box">
+                <img id="user-avatar" src="" style="width: 24px; height: 24px; border-radius: 50%;" alt="User profile">
+                <span id="user-name" style="font-size: 0.85rem; color: var(--text-main); font-weight: 500;"></span>
             </div>
         </div>
-    </div>
+    </nav>
 
     <main>
         <div class="header-title">
-            <h1>The Crochet & Knitting Marketplace</h1>
-            <p>Discover beautiful handcrafted items made with care, or choose from our selection of premium yarn.</p>
+            <h1>Crochet & Knitting 集市</h1>
+            <p>在這裡，妳可以挑選餚存者親手鈎織的溫柔成品，或是帶走一扎療癒感官的嚴選毛線。</p>
         </div>
 
+        <!-- 職員上架後台 -->
         <section id="staff-panel">
             <h3 style="color: var(--accent-staff); margin-bottom: 1.5rem;">🛠️ 職員後台：新增商品</h3>
             <form id="product-form" onsubmit="addNewProduct(event)">
                 <div class="form-grid">
-                    <div class="form-group">
+                   <div class="form-group">
                         <label for="prod-type">商品分類</label>
                         <select id="prod-type">
                             <option value="craft">Handcrafted Finished Pieces</option>
@@ -229,109 +245,145 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="prod-title">商品名稱 (English)</label>
-                        <input type="text" id="prod-title" required placeholder="e.g., Teal Sparkle Yarn">
+                        <label for="prod-status">商品狀態 (Status)</label>
+                        <select id="prod-status">
+                            <option value="">-- 常規商品 (無標籤) --</option>
+                            <option value="new">New Product</option>
+                            <option value="presale">Presale</option>
+                            <option value="soldout">Out of Stock</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="prod-title">商品名稱</label>
+                        <input type="text" id="prod-title" required placeholder="例如：霧粉色冰條線 / 療癒編織包">
                     </div>
                     <div class="form-group">
-                        <label for="prod-price">定價 (USD $)</label>
-                        <input type="number" id="prod-price" step="0.01" required placeholder="e.g., 3.99">
+                        <label for="prod-price">定價 (HKD)</label>
+                        <input type="number" id="prod-price" required placeholder="80">
                     </div>
                 </div>
-                <div class="form-grid" style="grid-template-columns: 2fr 1fr 1fr; align-items: end;">
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label for="prod-desc">商品描述</label>
+                    <textarea id="prod-desc" rows="2" placeholder="詳細規格或手作背後的小故事..."></textarea>
+                </div>
+                <div class="form-grid">
                     <div class="form-group">
-                        <label for="prod-desc">商品描述 (English)</label>
-                        <textarea id="prod-desc" rows="2" placeholder="Specifications, measurements, or the story behind it..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="prod-collection">商品系列 (Collection Tag)</label>
+                        <label for="prod-collection">商品系列 (Collection Tag - 選填)</label>
                         <input type="text" id="prod-collection" placeholder="e.g., Sparkling Collection">
                     </div>
                     <div class="form-group">
-                        <label>商品圖片 (Photo)</label>
-                        <div class="file-upload-wrapper">
-                            <div class="file-upload-btn" id="upload-btn-text">📷 Choose Photo</div>
-                            <input type="file" id="prod-image-file" accept="image/*" onchange="handleFileSelect(event)">
-                        </div>
-                        <span id="file-chosen">No file chosen</span>
+                        <label>商品圖片 (選填)</label>
+                        <input type="file" id="prod-image-input" accept="image/*" onchange="handleImageUpload(event)">
+                        <span id="file-chosen" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">No file chosen</span>
                     </div>
                 </div>
                 <button type="submit" class="submit-btn" style="margin-top: 1rem;">+ 確認發佈商品</button>
             </form>
         </section>
 
-        <h2 class="category-title">01. Handcrafted Finished Pieces</h2>
-        <div class="products-grid" id="crafts-container">
-           
-        </div>
+        <h2 class="category-title">01. 嚴選毛線與材料 / Premium Yarn</h2>
+        <div class="products-grid" id="yarn-container"></div>
 
-        <h2 class="category-title">02. Premium Yarn & Materials</h2>
-        <div class="products-grid" id="yarn-container">
-           
-        </div>
+        <h2 class="category-title">02. 倖存者手作製成品 / Finished Crafts</h2>
+        <div class="products-grid" id="crafts-container"></div>
+            
     </main>
 
     <script>
-        const ALLOWED_STAFF_EMAILS = ['crochetforherhk@gmail.com']; 
-        const STAFF_PASSWORD = 'Myacrochet28092008'; 
-
+        const ALLOWED_STAFF_EMAILS = ['crochetforherhk@gmail.com'];
         let isStaffAuthenticated = false;
         let currentUploadedImageBase64 = "";
 
-        function openLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
-        function closeLoginModal() {
-            document.getElementById('login-modal').style.display = 'none';
-            document.getElementById('modal-email').value = '';
-            document.getElementById('modal-pass').value = '';
-        }
-
-        function submitStaffLogin() {
-            const emailInput = document.getElementById('modal-email').value.trim().toLowerCase();
-            const passInput = document.getElementById('modal-pass').value;
-
-            if (ALLOWED_STAFF_EMAILS.includes(emailInput)) {
-                if (passInput === STAFF_PASSWORD) {
-                    isStaffAuthenticated = true;
-                    alert("✨ 驗證成功！已成功解鎖職員管理後台。");
-                    document.getElementById('login-modal').style.display = 'none';
-                    document.getElementById('login-trigger-btn').style.display = 'none';
-                    document.getElementById('toggle-container').style.display = 'flex';
-                    document.getElementById('mode-checkbox').checked = true;
-                    toggleViewMode();
-                } else { alert("❌ 密碼錯誤！"); }
-            } else { alert("❌ 此帳號不具備職員權限。"); }
-        }
-
-        function toggleViewMode() {
-            const isChecked = document.getElementById('mode-checkbox').checked;
-            const staffPanel = document.getElementById('staff-panel');
-            const modeStatus = document.getElementById('mode-status');
-            
-            if (isChecked && isStaffAuthenticated) {
-                document.body.classList.add('staff-mode-active');
-                staffPanel.style.display = 'block';
-                modeStatus.innerText = "🛠️ 職員管理模式";
-            } else {
-                document.body.classList.remove('staff-mode-active');
-                staffPanel.style.display = 'none';
-                modeStatus.innerText = "Customer View";
-            }
-        }
-
-        function handleFileSelect(event) {
+        // 處理圖片上傳
+        function handleImageUpload(event) {
             const file = event.target.files[0];
-            const fileChosenLabel = document.getElementById('file-chosen');
-            
+            const fileChosen = document.getElementById('file-chosen');
             if (file) {
-                fileChosenLabel.innerText = file.name;
+                if (fileChosen) fileChosen.innerText = file.name;
                 const reader = new FileReader();
-                reader.onload = function(e) { currentUploadedImageBase64 = e.target.result; };
+                reader.onload = function(e) {
+                    currentUploadedImageBase64 = e.target.result;
+                };
                 reader.readAsDataURL(file);
             } else {
-                fileChosenLabel.innerText = "No file chosen";
+                if (fileChosen) fileChosen.innerText = "No file chosen";
                 currentUploadedImageBase64 = "";
             }
         }
 
+        function editProduct(id) {
+            alert("修改功能開發中！商品 ID: " + id);
+        }
+        
+        function deleteProduct(id) {
+            if(confirm("確定要下架此商品嗎？")) {
+                const card = document.querySelector(`[data-id="${id}"]`);
+                if (card) card.remove();
+            }
+        }
+
+        function parseJwt(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        }
+
+        function toggleViewMode() {
+            const isStaffMode = document.getElementById('mode-checkbox').checked;
+            const staffPanel = document.getElementById('staff-panel');
+            const modeStatus = document.getElementById('mode-status');
+            
+            if (isStaffMode && isStaffAuthenticated) {
+                document.body.classList.add('staff-mode-active');
+                if (staffPanel) staffPanel.style.display = 'block';
+                if (modeStatus) modeStatus.innerText = '職員後台模式';
+            } else {
+                document.body.classList.remove('staff-mode-active');
+                if (staffPanel) staffPanel.style.display = 'none';
+                if (modeStatus) modeStatus.innerText = '顧客視角';
+                document.getElementById('mode-checkbox').checked = false;
+            }
+        }
+        
+        function handleCredentialResponse(response) {
+            const responsePayload = parseJwt(response.credential);
+            
+            localStorage.setItem('googleUserToken', JSON.stringify(responsePayload));
+            displayUserContent(responsePayload);
+
+            if (ALLOWED_STAFF_EMAILS.includes(responsePayload.email)) {
+                isStaffAuthenticated = true;
+                localStorage.setItem('isStaffLoggedIn', 'true');
+                
+                const toggleContainer = document.getElementById('toggle-container');
+                const modeCheckbox = document.getElementById('mode-checkbox');
+                
+                if (toggleContainer) toggleContainer.style.display = 'flex';
+                if (modeCheckbox) {
+                    modeCheckbox.checked = true;
+                    toggleViewMode();
+                }
+            }
+        }
+
+        // 用顯示隱藏來完美切換按鈕，絕不爆破 HTML 結構
+        function displayUserContent(payload) {
+            const googleBtnWrapper = document.getElementById('google-btn-wrapper');
+            const userProfileDisplay = document.getElementById('user-profile-display');
+            const userAvatar = document.getElementById('user-avatar');
+            const userName = document.getElementById('user-name');
+
+            if (googleBtnWrapper) googleBtnWrapper.style.display = 'none';
+            if (userProfileDisplay) userProfileDisplay.style.display = 'flex';
+            if (userAvatar) userAvatar.src = payload.picture;
+            if (userName) userName.innerText = payload.given_name;
+        }
+
+        // 新增商品與代碼安全生成
         function addNewProduct(event) {
             event.preventDefault();
             const type = document.getElementById('prod-type').value;
@@ -339,6 +391,7 @@
             const price = parseFloat(document.getElementById('prod-price').value).toFixed(2);
             const desc = document.getElementById('prod-desc').value;
             const collection = document.getElementById('prod-collection').value.trim();
+            const status = document.getElementById('prod-status').value;
             const id = Date.now();
 
             const targetContainer = type === 'craft' ? 
@@ -349,94 +402,84 @@
                 `<img src="${currentUploadedImageBase64}" class="product-image" alt="Product Image">` : 
                 `<div class="product-image-placeholder">No Image Available</div>`;
 
+            let statusTagHtml = '';
+            if (status === 'new') {
+                statusTagHtml = `<span class="status-badge status-new">New Product</span>`;
+            } else if (status === 'presale') {
+                statusTagHtml = `<span class="status-badge status-presale">Presale</span>`;
+            } else if (status === 'soldout') {
+                statusTagHtml = `<span class="status-badge status-soldout">Out of Stock</span>`;
+            }
+
             const collectionTagHtml = collection ? `<span style="display: inline-block; background: #e5e3df; color: #767471; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 20px; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">${collection}</span>` : '';
             const priceSuffix = type === 'yarn' ? ' / ball' : '';
 
             const cardHtml = `
-                <div class="product-card" data-id="${id}" data-collection="${collection.toLowerCase()}">
-                    <div class="staff-actions">
-                        <button class="delete-btn" style="background: #4b5563; margin-right: 5px;" onclick="editProduct(${id})">修改</button>
-                        <button class="delete-btn" onclick="deleteProduct(${id})">下架</button>
-                    </div>
-                    ${imageHtml}
-                    <div class="product-info">
-                        ${collectionTagHtml}
-                        <h4 class="product-title">${title}</h4>
-                        <p style="color: var(--text-muted); font-size: 0.85rem;">${desc}</p>
-                        <div class="product-meta">
-                            <span class="product-price">$${price}${priceSuffix}</span>
-                            <button class="buy-btn" onclick="alert('Order system coming soon!')">Purchase</button>
-                        </div>
-                    </div>
-                </div>
-            `;
+    <div class="product-card" data-id="${id}" data-collection="${collection.toLowerCase()}">
+        <div class="staff-actions">
+            <button class="delete-btn" style="background: #4b5563; margin-right: 5px;" onclick="editProduct(${id})">修改</button>
+            <button class="delete-btn" onclick="deleteProduct(${id})">下架</button>
+        </div>
+        ${imageHtml}
+        <div class="product-info">
+            <div>${statusTagHtml}${collectionTagHtml}</div>
+            <h4 class="product-title">${title}</h4>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">${desc}</p>
+            <div class="product-meta">
+                <span class="product-price">$${price}${priceSuffix}</span>
+                <button class="buy-btn" onclick="alert('Order system coming soon!')">Purchase</button>
+            </div>
+        </div>
+    </div>`;
+            
             targetContainer.insertAdjacentHTML('afterbegin', cardHtml);
-            
+            const codeToCopy = cardHtml.trim();
+
+            // 🌟 鐵壁防卡死機制：如果圖片超大，直接下載成純文字檔，免除 prompt 卡死限制！
+            if (currentUploadedImageBase64 && codeToCopy.length > 5000) {
+                const blob = new Blob([codeToCopy], { type: "text/plain;charset=utf-8" });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = `product-${id}.txt`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                alert("🎉 偵測到包含大體積圖片！為了防止網頁卡死，HTML 代碼已經自動下載為文字檔（.txt），請直接打開檔案複製並貼到 GitHub 即可！");
+            } else {
+                prompt("✨ 商品排版成功！請複製下方這段自動生成的 HTML 代碼，然後去 GitHub 貼上：", codeToCopy);
+            }
+
+            // 表單重設
             document.getElementById('product-form').reset();
-            document.getElementById('file-chosen').innerText = "No file chosen";
+            const fileChosen = document.getElementById('file-chosen');
+            if (fileChosen) fileChosen.innerText = "No file chosen";
             currentUploadedImageBase64 = "";
-            alert("商品已成功發佈！");
         }
 
-        function editProduct(id) {
-            const card = document.querySelector(`.product-card[data-id="${id}"]`);
-            if (!card) return;
-
-            const currentTitle = card.querySelector('.product-title').innerText;
-            const currentDesc = card.querySelector('p').innerText;
-            const currentPriceText = card.querySelector('.product-price').innerText.replace('$', '').split('/')[0].trim();
-            
-            // 嘗試抓取現有的 Collection 標籤文字
-            const currentTagEl = card.querySelector('.product-info span:not(.product-title)');
-            const currentCollection = currentTagEl ? currentTagEl.innerText : '';
-
-            const newTitle = prompt("請輸入新的商品名稱 (English):", currentTitle);
-            if (newTitle === null) return;
-
-            const newDesc = prompt("請輸入新的商品描述 (English):", currentDesc);
-            if (newDesc === null) return;
-
-            const newPrice = prompt("請輸入新的定價 (USD $):", currentPriceText);
-            if (newPrice === null) return;
-
-            const newCollection = prompt("請輸入新的商品系列 (Collection Tag - 留空則刪除):", currentCollection);
-            if (newCollection === null) return;
-
-            // 更新基本資訊
-            card.querySelector('.product-title').innerText = newTitle;
-            card.querySelector('p').innerText = newDesc;
-            
-            const formattedPrice = parseFloat(newPrice).toFixed(2);
-            if (card.querySelector('.product-price').innerText.includes('/ ball')) {
-                card.querySelector('.product-price').innerText = `$${formattedPrice} / ball`;
-            } else {
-                card.querySelector('.product-price').innerText = `$${formattedPrice}`;
-            }
-
-            // 更新 Collection 標籤
-            if (newCollection.trim()) {
-                if (currentTagEl) {
-                    currentTagEl.innerText = newCollection;
-                    currentTagEl.style.display = 'inline-block';
-                } else {
-                    const newTagHtml = `<span style="display: inline-block; background: #e5e3df; color: #767471; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 20px; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">${newCollection}</span>`;
-                    card.querySelector('.product-info').insertAdjacentHTML('afterbegin', newTagHtml);
+        // 🌟 重新整理自動恢復權限與登入狀態（完全無毒不卡死版本）
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('googleUserToken');
+            if (savedUser) {
+                try {
+                    const payload = JSON.parse(savedUser);
+                    displayUserContent(payload); 
+                } catch (e) {
+                    console.error("恢復顧客登入失敗:", e);
                 }
-                card.setAttribute('data-collection', newCollection.trim().toLowerCase());
-            } else {
-                if (currentTagEl) currentTagEl.remove();
-                card.setAttribute('data-collection', '');
             }
 
-            alert("商品資訊已成功更新！");
-        }
-
-        function deleteProduct(id) {
-            if (confirm("確認要下架此商品嗎？")) {
-                const card = document.querySelector(`.product-card[data-id="${id}"]`);
-                if (card) card.remove();
+            if (localStorage.getItem('isStaffLoggedIn') === 'true') {
+                isStaffAuthenticated = true;
+                const toggleContainer = document.getElementById('toggle-container');
+                const modeCheckbox = document.getElementById('mode-checkbox');
+                
+                if (toggleContainer) toggleContainer.style.display = 'flex';
+                if (modeCheckbox) {
+                    modeCheckbox.checked = true;
+                    toggleViewMode();
+                }
             }
-        }
+        });
     </script>
 </body>
 </html>
