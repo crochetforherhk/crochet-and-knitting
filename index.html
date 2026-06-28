@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crochet & Knitting | Crochet For Her HK</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root {
             --bg-color: #f4f3f0; /* rhode 燕麥灰米色 */
@@ -118,6 +117,22 @@
             padding: 0.8rem 2rem; border-radius: 50px; cursor: pointer; font-size: 0.9rem;
         }
 
+        /* 職員登入按鈕 */
+        .staff-login-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .staff-login-btn:hover {
+            border-color: var(--text-main);
+            color: var(--text-main);
+        }
+
         /* 商品展示 */
         .products-grid {
             display: grid;
@@ -179,14 +194,20 @@
         body.staff-mode-active { border-top: 4px solid var(--accent-staff); }
         body.staff-mode-active .staff-actions { display: flex; }
 
-        .user-profile-box {
-            display: none; /* 預設隱藏，由 JS 控制顯示 */
+        .staff-profile-box {
+            display: none;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             background: rgba(255, 255, 255, 0.8);
             padding: 0.4rem 1rem;
             border-radius: 30px;
             border: 1px solid var(--border-color);
+        }
+        .logout-link {
+            font-size: 0.75rem;
+            color: #ef4444;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -198,7 +219,6 @@
             <span style="font-weight: 500; font-size: 0.95rem;">Crochet & Knitting</span>
         </div>
         <div class="nav-right">
-            <!-- 後台切換開關 -->
             <div class="mode-toggle-container" id="toggle-container">
                 <span id="mode-status" style="font-size: 0.85rem;">顧客視角</span>
                 <label class="switch">
@@ -207,21 +227,11 @@
                 </label>
             </div>
             
-            <!-- 🌟 穩固的 Google 按鈕原生容器，絕不用 innerHTML 摧毀它 -->
-            <div id="google-btn-wrapper" style="display: block;">
-                <div id="g_id_onload"
-                     data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
-                     data-context="signin"
-                     data-ux_mode="popup"
-                     data-callback="handleCredentialResponse">
-                </div>
-                <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-size="medium"></div>
-            </div>
+            <button id="gate-login-btn" class="staff-login-btn" onclick="triggerStaffLogin()">職員登入</button>
 
-            <!-- 🌟 獨立的頭像容器，僅靠 CSS 顯示/隱藏切換 -->
-            <div id="user-profile-display" class="user-profile-box">
-                <img id="user-avatar" src="" style="width: 24px; height: 24px; border-radius: 50%;" alt="User profile">
-                <span id="user-name" style="font-size: 0.85rem; color: var(--text-main); font-weight: 500;"></span>
+            <div id="staff-identity-box" class="staff-profile-box">
+                <span style="font-size: 0.85rem; color: var(--accent-staff); font-weight: 600;">✨ 職員內部帳號</span>
+                <span class="logout-link" onclick="handleStaffLogout()">登出</span>
             </div>
         </div>
     </nav>
@@ -229,10 +239,9 @@
     <main>
         <div class="header-title">
             <h1>Crochet & Knitting 集市</h1>
-            <p>在這裡，妳可以挑選餚存者親手鈎織的溫柔成品，或是帶走一扎療癒感官的嚴選毛線。</p>
+            <p>在這裡，妳可以挑選倖存者親手鈎織的溫柔成品，或是帶走一扎療癒感官的嚴選毛線。</p>
         </div>
 
-        <!-- 職員上架後台 -->
         <section id="staff-panel">
             <h3 style="color: var(--accent-staff); margin-bottom: 1.5rem;">🛠️ 職員後台：新增商品</h3>
             <form id="product-form" onsubmit="addNewProduct(event)">
@@ -291,7 +300,9 @@
     </main>
 
     <script>
-        const ALLOWED_STAFF_EMAILS = ['crochetforherhk@gmail.com'];
+        // 🔒 在這裡設定妳想要的登入密碼
+        const MASTER_STAFF_PASSWORD = "crochetforherhk"; 
+        
         let isStaffAuthenticated = false;
         let currentUploadedImageBase64 = "";
 
@@ -323,15 +334,7 @@
             }
         }
 
-        function parseJwt(token) {
-            var base64Url = token.split('.')[1];
-            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            return JSON.parse(jsonPayload);
-        }
-
+        // 後台視角切換開關
         function toggleViewMode() {
             const isStaffMode = document.getElementById('mode-checkbox').checked;
             const staffPanel = document.getElementById('staff-panel');
@@ -348,39 +351,46 @@
                 document.getElementById('mode-checkbox').checked = false;
             }
         }
-        
-        function handleCredentialResponse(response) {
-            const responsePayload = parseJwt(response.credential);
-            
-            localStorage.setItem('googleUserToken', JSON.stringify(responsePayload));
-            displayUserContent(responsePayload);
 
-            if (ALLOWED_STAFF_EMAILS.includes(responsePayload.email)) {
+        // 彈出密碼視窗輸入
+        function triggerStaffLogin() {
+            const inputPassword = prompt("🔒 請輸入 Crochet For Her HK 內部職員管理密碼：");
+            if (inputPassword === null) return; // 使用者按取消
+
+            if (inputPassword === MASTER_STAFF_PASSWORD) {
                 isStaffAuthenticated = true;
                 localStorage.setItem('isStaffLoggedIn', 'true');
-                
-                const toggleContainer = document.getElementById('toggle-container');
-                const modeCheckbox = document.getElementById('mode-checkbox');
-                
-                if (toggleContainer) toggleContainer.style.display = 'flex';
-                if (modeCheckbox) {
-                    modeCheckbox.checked = true;
-                    toggleViewMode();
-                }
+                alert("✨ 驗證成功！已成功解鎖內部管理後台。");
+                renderStaffUI();
+            } else {
+                alert("❌ 密碼錯誤！無權存取管理後台。");
             }
         }
 
-        // 用顯示隱藏來完美切換按鈕，絕不爆破 HTML 結構
-        function displayUserContent(payload) {
-            const googleBtnWrapper = document.getElementById('google-btn-wrapper');
-            const userProfileDisplay = document.getElementById('user-profile-display');
-            const userAvatar = document.getElementById('user-avatar');
-            const userName = document.getElementById('user-name');
+        // 渲染登入成功的 UI 狀態
+        function renderStaffUI() {
+            const gateLoginBtn = document.getElementById('gate-login-btn');
+            const staffIdentityBox = document.getElementById('staff-identity-box');
+            const toggleContainer = document.getElementById('toggle-container');
+            const modeCheckbox = document.getElementById('mode-checkbox');
 
-            if (googleBtnWrapper) googleBtnWrapper.style.display = 'none';
-            if (userProfileDisplay) userProfileDisplay.style.display = 'flex';
-            if (userAvatar) userAvatar.src = payload.picture;
-            if (userName) userName.innerText = payload.given_name;
+            if (gateLoginBtn) gateLoginBtn.style.display = 'none';
+            if (staffIdentityBox) staffIdentityBox.style.display = 'flex';
+            if (toggleContainer) toggleContainer.style.display = 'flex';
+            
+            if (modeCheckbox) {
+                modeCheckbox.checked = true;
+                toggleViewMode();
+            }
+        }
+
+        // 登出內部職員身分
+        function handleStaffLogout() {
+            if(confirm("確定要登出管理員身分嗎？")) {
+                localStorage.removeItem('isStaffLoggedIn');
+                isStaffAuthenticated = false;
+                window.location.reload(); // 刷新重新載入乾淨的顧客畫面
+            }
         }
 
         // 新增商品與代碼安全生成
@@ -435,7 +445,7 @@
             targetContainer.insertAdjacentHTML('afterbegin', cardHtml);
             const codeToCopy = cardHtml.trim();
 
-            // 🌟 鐵壁防卡死機制：如果圖片超大，直接下載成純文字檔，免除 prompt 卡死限制！
+            // 如果圖片超大，直接下載成純文字檔，免除 prompt 卡死限制！
             if (currentUploadedImageBase64 && codeToCopy.length > 5000) {
                 const blob = new Blob([codeToCopy], { type: "text/plain;charset=utf-8" });
                 const link = document.createElement("a");
@@ -456,28 +466,11 @@
             currentUploadedImageBase64 = "";
         }
 
-        // 🌟 重新整理自動恢復權限與登入狀態（完全無毒不卡死版本）
+        // 🌟 核心：網頁重新整理時，自動檢查 localStorage 恢復職員登入狀態（100% 成功且不卡死）
         window.addEventListener('DOMContentLoaded', () => {
-            const savedUser = localStorage.getItem('googleUserToken');
-            if (savedUser) {
-                try {
-                    const payload = JSON.parse(savedUser);
-                    displayUserContent(payload); 
-                } catch (e) {
-                    console.error("恢復顧客登入失敗:", e);
-                }
-            }
-
             if (localStorage.getItem('isStaffLoggedIn') === 'true') {
                 isStaffAuthenticated = true;
-                const toggleContainer = document.getElementById('toggle-container');
-                const modeCheckbox = document.getElementById('mode-checkbox');
-                
-                if (toggleContainer) toggleContainer.style.display = 'flex';
-                if (modeCheckbox) {
-                    modeCheckbox.checked = true;
-                    toggleViewMode();
-                }
+                renderStaffUI();
             }
         });
     </script>
