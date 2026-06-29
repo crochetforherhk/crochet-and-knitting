@@ -293,7 +293,22 @@
 
         <h2 class="category-title">01. 嚴選毛線與材料 / Premium Yarn</h2>
         <div class="products-grid" id="yarn-container"></div>
-
+<div class="product-card" data-id="1782754947549" data-collection="fuzzy collection">
+        <div class="staff-actions">
+            <button class="delete-btn" style="background: #4b5563; margin-right: 5px;" onclick="editProduct(1782754947549)">修改</button>
+            <button class="delete-btn" onclick="deleteProduct(1782754947549)">下架</button>
+        </div>
+        <div class="product-image-placeholder">No Image Available</div>
+        <div class="product-info">
+            <div><span style="display: inline-block; background: #e5e3df; color: #767471; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 20px; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Fuzzy Collection</span></div>
+            <h4 class="product-title">25g fuzzy pink mix yarn</h4>
+            <p style="color: var(--text-muted); font-size: 0.85rem;"></p>
+            <div class="product-meta">
+                <span class="product-price">$4.00</span>
+                <button class="buy-btn" onclick="alert('Order system coming soon!')">Purchase</button>
+            </div>
+        </div>
+    </div>
         <h2 class="category-title">02. 倖存者手作製成品 / Finished Crafts</h2>
         <div class="products-grid" id="crafts-container"></div>
             
@@ -415,7 +430,7 @@
             
             const imageHtml = currentUploadedImageBase64 ? 
                 `<img src="${currentUploadedImageBase64}" class="product-image" alt="Product Image">` : 
-                `<div class="product-image-placeholder">No Image Available</div>`;
+                `<div class="https://i.meee.com.tw/ipfIZHP.png">class="product-image" alt="25g fuzzy pink mix yarn";
 
             let statusTagHtml = '';
             if (status === 'new') {
