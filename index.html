@@ -336,11 +336,16 @@
 
         // 後台視角切換開關
         function toggleViewMode() {
+            if (!isStaffAuthenticated) {
+                document.getElementById('mode-checkbox').checked = false;
+                return;
+            }
+
             const isStaffMode = document.getElementById('mode-checkbox').checked;
             const staffPanel = document.getElementById('staff-panel');
             const modeStatus = document.getElementById('mode-status');
             
-            if (isStaffMode && isStaffAuthenticated) {
+            if (isStaffMode) {
                 document.body.classList.add('staff-mode-active');
                 if (staffPanel) staffPanel.style.display = 'block';
                 if (modeStatus) modeStatus.innerText = '職員後台模式';
@@ -348,7 +353,6 @@
                 document.body.classList.remove('staff-mode-active');
                 if (staffPanel) staffPanel.style.display = 'none';
                 if (modeStatus) modeStatus.innerText = '顧客視角';
-                document.getElementById('mode-checkbox').checked = false;
             }
         }
 
@@ -378,6 +382,7 @@
             if (staffIdentityBox) staffIdentityBox.style.display = 'flex';
             if (toggleContainer) toggleContainer.style.display = 'flex';
             
+            // 刷新后自动保持后台视图
             if (modeCheckbox) {
                 modeCheckbox.checked = true;
                 toggleViewMode();
@@ -389,7 +394,7 @@
             if(confirm("確定要登出管理員身分嗎？")) {
                 localStorage.removeItem('isStaffLoggedIn');
                 isStaffAuthenticated = false;
-                window.location.reload(); // 刷新重新載入乾淨的顧客畫面
+                window.location.reload();
             }
         }
 
@@ -466,7 +471,7 @@
             currentUploadedImageBase64 = "";
         }
 
-        // 🌟 核心：網頁重新整理時，自動檢查 localStorage 恢復職員登入狀態（100% 成功且不卡死）
+        // 🌟 核心：網頁重新整理時，自動恢復職員狀態
         window.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('isStaffLoggedIn') === 'true') {
                 isStaffAuthenticated = true;
