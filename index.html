@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-HK">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crochet & Knitting | Crochet For Her HK</title>
+    <title>Caroline's Yarns</title>
     <style>
         :root {
             --bg-color: #f4f3f0; /* rhode 燕麥灰米色 */
@@ -215,12 +215,12 @@
 
     <nav>
         <div class="nav-left">
-            <a href="index.html" class="back-home">← 返回主頁</a>
-            <span style="font-weight: 500; font-size: 0.95rem;">Crochet & Knitting</span>
+            <a href="index.html" class="back-home">← Back to Home</a>
+            <span style="font-weight: 500; font-size: 0.95rem;">Caroline's Yarns</span>
         </div>
         <div class="nav-right">
             <div class="mode-toggle-container" id="toggle-container">
-                <span id="mode-status" style="font-size: 0.85rem;">顧客視角</span>
+                <span id="mode-status" style="font-size: 0.85rem;">Customer View</span>
                 <label class="switch">
                     <input type="checkbox" id="mode-checkbox" onchange="toggleViewMode()">
                     <span class="slider"></span>
@@ -238,8 +238,8 @@
 
     <main>
         <div class="header-title">
-            <h1>Crochet & Knitting 集市</h1>
-            <p>在這裡，妳可以挑選倖存者親手鈎織的溫柔成品，或是帶走一扎療癒感官的嚴選毛線。</p>
+            <h1>Caroline's Yarns Market</h1>
+            <p>Here you can choose hand-knitted delicate finished works, or pick premium therapeutic yarn materials.</p>
         </div>
 
         <section id="staff-panel">
@@ -256,7 +256,7 @@
                     <div class="form-group">
                         <label for="prod-status">商品狀態 (Status)</label>
                         <select id="prod-status">
-                            <option value="">-- 常規商品 (無標籤) --</option>
+                            <option value="">-- Regular Item (No Label) --</option>
                             <option value="new">New Product</option>
                             <option value="presale">Presale</option>
                             <option value="soldout">Out of Stock</option>
@@ -265,7 +265,7 @@
                     
                     <div class="form-group">
                         <label for="prod-title">商品名稱</label>
-                        <input type="text" id="prod-title" required placeholder="例如：霧粉色冰條線 / 療癒編織包">
+                        <input type="text" id="prod-title" required placeholder="e.g. Mist Pink Ice Yarn / Healing Knit Bag">
                     </div>
                     <div class="form-group">
                         <label for="prod-price">定價 (HKD)</label>
@@ -274,31 +274,31 @@
                 </div>
                 <div class="form-group" style="margin-bottom: 1.5rem;">
                     <label for="prod-desc">商品描述</label>
-                    <textarea id="prod-desc" rows="2" placeholder="詳細規格或手作背後的小故事..."></textarea>
+                    <textarea id="prod-desc" rows="2" placeholder="Detailed specifications or stories behind this handmade piece..."></textarea>
                 </div>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="prod-collection">商品系列 (Collection Tag - 選填)</label>
+                        <label for="prod-collection">商品系列 (Collection Tag - Optional)</label>
                         <input type="text" id="prod-collection" placeholder="e.g., Sparkling Collection">
                     </div>
                     <div class="form-group">
-                        <label>商品圖片 (選填)</label>
+                        <label>商品圖片 (Optional)</label>
                         <input type="file" id="prod-image-input" accept="image/*" onchange="handleImageUpload(event)">
                         <span id="file-chosen" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">No file chosen</span>
                     </div>
                 </div>
-                <button type="submit" class="submit-btn" style="margin-top: 1rem;">+ 確認發佈商品</button>
+                <button type="submit" class="submit-btn" style="margin-top: 1rem;">+ Publish New Product</button>
             </form>
         </section>
 
-        <h2 class="category-title">01. 嚴選毛線與材料 / Premium Yarn</h2>
+        <h2 class="category-title">01. Premium Yarn & Materials</h2>
         <div class="products-grid" id="yarn-container"></div>
 <div class="product-card" data-id="1782754947549" data-collection="fuzzy collection">
         <div class="staff-actions">
             <button class="delete-btn" style="background: #4b5563; margin-right: 5px;" onclick="editProduct(1782754947549)">修改</button>
             <button class="delete-btn" onclick="deleteProduct(1782754947549)">下架</button>
         </div>
-        <img src="https://i.meee.com.tw/ipfIZHP.png" class="product-image" alt="商品圖">
+        <img src="shturl.cc/mlBPgxqBkRdDT7pR1vYP29a" class="product-image" alt="Product Image">
         <div class="product-info">
             <div><span style="display: inline-block; background: #e5e3df; color: #767471; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 20px; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Fuzzy Collection</span></div>
             <h4 class="product-title">25g fuzzy pink mix yarn</h4>
@@ -309,7 +309,7 @@
             </div>
         </div>
     </div>
-        <h2 class="category-title">02. 倖存者手作製成品 / Finished Crafts</h2>
+        <h2 class="category-title">02. Handcrafted Finished Works</h2>
         <div class="products-grid" id="crafts-container"></div>
             
     </main>
@@ -363,17 +363,17 @@
             if (isStaffMode) {
                 document.body.classList.add('staff-mode-active');
                 if (staffPanel) staffPanel.style.display = 'block';
-                if (modeStatus) modeStatus.innerText = '職員後台模式';
+                if (modeStatus) modeStatus.innerText = 'Admin Backend Mode';
             } else {
                 document.body.classList.remove('staff-mode-active');
                 if (staffPanel) staffPanel.style.display = 'none';
-                if (modeStatus) modeStatus.innerText = '顧客視角';
+                if (modeStatus) modeStatus.innerText = 'Customer View';
             }
         }
 
         // 彈出密碼視窗輸入
         function triggerStaffLogin() {
-            const inputPassword = prompt("🔒 請輸入 Crochet For Her HK 內部職員管理密碼：");
+            const inputPassword = prompt("🔒 請輸入 Caroline's Yarns 內部職員管理密碼：");
             if (inputPassword === null) return; // 使用者按取消
 
             if (inputPassword === MASTER_STAFF_PASSWORD) {
@@ -430,7 +430,7 @@
             
             const imageHtml = currentUploadedImageBase64 ? 
                 `<img src="${currentUploadedImageBase64}" class="product-image" alt="Product Image">` : 
-                `<div class="https://i.meee.com.tw/ipfIZHP.png">class="product-image" alt="25g fuzzy pink mix yarn";
+                `<div class="product-image-placeholder">No Image Available</div>`;
 
             let statusTagHtml = '';
             if (status === 'new') {
